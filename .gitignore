@@ -1,0 +1,4 @@
+.venv
+__pycache__/
+info_reels/apps/app/.env.prod
+info_reels/apps/app/.env.dev
