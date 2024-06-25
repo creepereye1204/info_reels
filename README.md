@@ -13,3 +13,9 @@ suya community는 학생들과 함께 만들어가는 꿈의 나라
 [개발기여](CONTRIBUTING.md)
 
 ## .env는 원칙상 올리지 않는 것이 맞지만 원활한 협업을 위해 추가했습니다.
+
+## Home
+![img.png](img.png)
+
+## Data (중요도가 높은건 99999로)
+![img_1.png](img_1.png)

@@ -70,7 +70,7 @@ class InforSchema(BaseModel):
 
 
 def crawling():
-    MINUTE = 1
+    MINUTE = 60
     random_min = 10
     random_max = 20
     start_index = 1

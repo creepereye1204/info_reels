@@ -2,7 +2,7 @@
 FROM python:3.11.0-slim
 
 # Set the working directory in the container
-WORKDIR /opt/info_reels
+WORKDIR /opt/info_reels_docker
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -25,7 +25,7 @@ RUN poetry install --no-root
 
 # Copy project files
 COPY ["README.md", "Makefile", "./"]
-COPY info_reels info_reels
+COPY info_reels_docker info_reels_docker
 
 # Expose the Django development server port (adjust if needed)
 EXPOSE 8080
