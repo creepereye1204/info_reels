@@ -19,6 +19,7 @@ psutil = "^6.0.0"
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
 pre-commit = "^3.7.1"
+coloredlogs = "^15.0.1"
 
 [build-system]
 requires = ["poetry-core"]
