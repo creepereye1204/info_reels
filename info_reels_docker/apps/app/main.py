@@ -1,5 +1,4 @@
 # coding: utf-8
-import logging
 import multiprocessing
 import os
 import random
@@ -7,7 +6,6 @@ import time
 from datetime import date, datetime
 from typing import List
 
-import coloredlogs
 import psutil
 import requests
 import uvicorn
@@ -32,11 +30,6 @@ app.mount('/static',
 pool = None
 engine = create_engine(db_host, connect_args={'options': '-c timezone=utc'})
 Base = declarative_base()
-
-# 로거 설정
-coloredlogs.install(level=logging.INFO,
-                    fmt='[%(processName)s] %(asctime)s - %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
 
 
 class InforDao(Base):
@@ -77,7 +70,6 @@ class InforSchema(BaseModel):
 
 
 def crawling():
-    logger = logging.getLogger(__name__)
     MINUTE = 60
     random_min = 10
     random_max = 20
@@ -93,7 +85,6 @@ def crawling():
                 response = requests.get(url)
                 html = response.content.decode('utf-8')
                 soup = BeautifulSoup(html, 'html.parser')
-
                 notices = soup.findAll('th', class_='step1')
                 titles = soup.findAll('span', class_='tit')
                 authors = soup.findAll('td', class_='step3')
@@ -115,7 +106,6 @@ def crawling():
                         date=date_obj,  # 변환된 date 객체 사용
                         view=int(view.text.strip().replace(',', '')),
                         link=link.find('a', class_='itembx')['href'])
-                    logger.info(f'date {date}')
                     db.add(infor)
         except Exception as e:
             print(f'Error occurred: {e}')
@@ -130,7 +120,6 @@ def crawling():
 async def read_items(request: Request, db: Session = Depends(get_db)):
     items = db.query(InforDao).all()
     items.sort(reverse=True, key=lambda x: (x.notice, x.date))
-    print('sssssssssssssssssssssssss', flush=True)
     return templates.TemplateResponse(request, 'board.html', {'items': items})
 
 
@@ -138,12 +127,6 @@ async def read_items(request: Request, db: Session = Depends(get_db)):
 async def get_settings(request: Request):
     return templates.TemplateResponse(request, 'home.html',
                                       {'request': request})
-
-
-@app.get('/delete')
-async def delete(db: Session = Depends(get_db)):
-    db.query(InforDao).delete()
-    return 'deleted'
 
 
 @app.get('/dashboard')

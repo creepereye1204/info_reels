@@ -23,3 +23,11 @@ up-prod:
 
 .PHONY: build-up-prod
 build-up-prod: build-prod up-prod
+
+.PHONY: push
+push:
+	docker-compose -f docker-compose.dev.yml build
+	docker commit fastapi-projects-app-1 info_reels:1.0
+	docker tag info_reels:1.0 creepereye/info_reels_2:1.0
+	docker push creepereye/info_reels_2:1.0
+

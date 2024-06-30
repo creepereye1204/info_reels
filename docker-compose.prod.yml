@@ -15,7 +15,7 @@ services:
       - postgresql-data:/var/lib/postgresql/data
 
   app:
-    image: creepereye/info_reels:latest
+    image: info_reels:1.0
     restart: unless-stopped
     ports:
       - '8080:8080'
