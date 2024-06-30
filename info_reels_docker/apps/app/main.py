@@ -8,6 +8,7 @@ from fastapi import Depends, FastAPI
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from starlette.requests import Request
+from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from .jobs import crawling
@@ -23,17 +24,23 @@ app.mount('/static',
 pool = None
 
 
+@app.get('/')
+async def get_settings(request: Request):
+    return templates.TemplateResponse(request=request, name='home.html')
+
+
+@app.get('/info')
+async def info():
+    return RedirectResponse(url='/docs')
+
+
 @app.get('/items', response_model=List[InforSchema])
 async def read_items(request: Request, db: Session = Depends(get_db)):
     items = db.query(InforDao).all()
     items.sort(reverse=True, key=lambda x: (x.notice, x.date))
-    return templates.TemplateResponse(request, 'board.html', {'items': items})
-
-
-@app.get('/')
-async def get_settings(request: Request):
-    return templates.TemplateResponse(request, 'home.html',
-                                      {'request': request})
+    return templates.TemplateResponse(request=request,
+                                      name='board.html',
+                                      context={'items': items})
 
 
 @app.get('/dashboard')
@@ -46,6 +53,13 @@ def get_usage_data():
         'hdd_usage': hdd_usage,
         'mem_usage': mem_usage
     }
+
+
+@app.get('/api/items', response_model=List[InforSchema])
+async def api_read_items(db: Session = Depends(get_db)):
+    items = db.query(InforDao).all()
+    items.sort(reverse=True, key=lambda x: (x.notice, x.date))
+    return items
 
 
 @app.on_event('startup')
